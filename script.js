@@ -27,6 +27,12 @@ function render() {
   
   ctx.fillStyle = '#ff4757';
   ctx.fillRect(350, 150, 100, 200);
+
+  ctx.fillStyle = "#555";
+  ctx.fillRect(350, 120, 100, 12);
+
+  ctx.fillStyle = "#2ed573";
+  ctx.fillRect(350, 120, enemyHealth, 12);
  }
 
 window.addEventListener("keydown", (e) => {
