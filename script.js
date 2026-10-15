@@ -61,6 +61,9 @@ window.addEventListener("keydown", (e) => {
 
 function triggerPlayerPunch(side) {
   playerStats.isPunching = true;
+
+  enemyHealth = Math.max(0, enemyHealth - 10);
+  console.log(side + " punch! Enemy Health is", enemyHealth);
   
   setTimeout(() => {
     playerStats.isPunching = false;
