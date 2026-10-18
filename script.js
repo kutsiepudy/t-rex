@@ -5,6 +5,8 @@ let gameOver = false;
 let enemyState = "idle";
 let currentPattern = null;
 let attackIndex = 0;
+let enemyTimer = 0;
+let currentAttack = null;
 let playerStats = {
   health: 100,
   stamina: 100,
@@ -27,9 +29,40 @@ function gameLoop() {
 
 function update() {
   if (gameOver) return;
-  
+
   if (currentPattern === null) {
     chooseAttackPattern();
+    return;
+  }
+
+  enemyTimer--;
+
+  if (enemyTimer > 0) return;
+
+  switch (enemyState) {
+    case "idle":
+      currentAttack = currentPattern[attackIndex];
+      enemyState = "telegraph";
+      enemyTimer = 45;
+      console.log("Incoming:", currentAttack);
+      break;
+
+    case "telegraph":
+      enemyState = "punching";
+      enemyTimer = 20;
+      console.log("T-REX ATTACKS:", currentAttack);
+      break;
+
+    case "punching":
+      enemyState = "idle";
+      enemyTimer = 30;
+
+      attackIndex++;
+
+      if (attackIndex >= currentPattern.length) {
+        currentPattern = null;
+      }
+      break;
   }
 }
 
