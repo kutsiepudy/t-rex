@@ -1,6 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let enemyHealth = 100;
+let gameOver = false;
 let playerStats = {
   health: 100,
   stamina: 100,
@@ -33,6 +34,13 @@ function render() {
 
   ctx.fillStyle = "#2ed573";
   ctx.fillRect(350, 120, enemyHealth, 12);
+  
+  if (enemyHealth <= 0) {
+    ctx.fillStyle = "#fff";
+    ctx.font = "32px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("TIPPED OVER!!!", canvas.width / 2, 80)
+  }
  }
 
 window.addEventListener("keydown", (e) => {
@@ -59,11 +67,21 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+function endGame() {
+  console.log("GAME OVER");
+  gameOver = true;
+}
+
 function triggerPlayerPunch(side) {
   playerStats.isPunching = true;
+  if (enemyHealth <= 0) return;
 
   enemyHealth = Math.max(0, enemyHealth - 10);
-  console.log(side + " punch! Enemy Health is", enemyHealth);
+  console.log(side + " punch", "Enemy Health is", enemyHealth);
+  
+  if (enemyHealth === 0) {
+    endGame();
+  }
   
   setTimeout(() => {
     playerStats.isPunching = false;
