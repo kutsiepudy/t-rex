@@ -15,7 +15,8 @@ let playerStats = {
   stamina: 100,
   energy: 0,
   isPunching: false,
-  isDodging: false
+  isDodging: false,
+  dodgeDirection: null
 };
 const attackPatterns = [
   ["left", "right", "left", "left"],
@@ -23,6 +24,12 @@ const attackPatterns = [
   ["right", "right", "heavyL"],
   ["heavyR", "left", "right"],
 ]
+const damage = {
+  left: 10,
+  right: 10,
+  heavyR: 15,
+  heavyL: 15
+};
 
 function gameLoop() {
   update();
@@ -62,25 +69,45 @@ function update() {
     case "idle":
       currentAttack = currentPattern[attackIndex];
       enemyState = "telegraph";
-      enemyTimer = 45;
+      enemyTimer = 60;
       console.log("Incoming:", currentAttack);
       break;
-
-    case "telegraph":
-      enemyState = "punching";
-      enemyTimer = 20;
-      playerStats.health = Math.max(0, playerStats.health - 10);
-      console.log("T-REX ATTACKS:", currentAttack);
-      console.log("HEALTH:", playerStats.health);
       
+      case "telegraph": {
+        enemyState = "punching";
+        enemyTimer = 20;
+
+      const attackDamage = damage[currentAttack];
+      const attackDirection = currentAttack.endsWith("L")
+        ? "left"
+        : currentAttack.endsWith("R")
+        ? "right"
+        : currentAttack;
+
+      const dodgedCorrectly =
+        playerStats.isDodging &&
+        playerStats.dodgeDirection === attackDirection;
+
+      if (!dodgedCorrectly) {
+        playerStats.health = Math.max(
+          0,
+          playerStats.health - attackDamage
+        );
+      }
+
+      console.log("T-REX ATTACKS:", currentAttack);
+      console.log(dodgedCorrectly ? "DODGED!" : "HIT!", playerStats.health);
+
       if (playerStats.health <= 0) {
         endGame();
       }
+
       break;
+    }
 
     case "punching":
       enemyState = "idle";
-      enemyTimer = 30;
+      enemyTimer = 45;
       attackIndex++;
 
       if (attackIndex >= currentPattern.length) {
@@ -98,6 +125,9 @@ function render() {
   
   ctx.fillStyle = '#ff4757';
   ctx.fillRect(350, 150, 100, 200);
+  
+  ctx.fillStyle = "#3498db";
+  ctx.fillRect(80, 150, 100, 200)
 
   ctx.fillStyle = "#555";
   ctx.fillRect(350, 120, 100, 12);
@@ -147,11 +177,11 @@ window.addEventListener("keydown", (e) => {
   
   switch (e.key) {
     case "ArrowLeft":
-      console.log("dodged left");
+      startDodge("left");
       break;
       
     case "ArrowRight":
-      console.log("dodged right");
+      startDodge("right")
       break;
       
     case "z":
@@ -196,6 +226,21 @@ function chooseAttackPattern() {
   attackIndex = 0;
   
   console.log("chosen pattern: ", currentPattern);
-}
+};
+
+function startDodge(direction) {
+  if (gameOver || !gameStarted) return;
+  if (playerStats.isDodging || playerStats.isPunching) return;
+
+  playerStats.isDodging = true;
+  playerStats.dodgeDirection = direction;
+
+  console.log("Dodging:", direction);
+
+  setTimeout(() => {
+    playerStats.isDodging = false;
+    playerStats.dodgeDirection = null;
+  }, 400);
+};
 
 gameLoop();
