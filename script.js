@@ -47,7 +47,7 @@ let playerStats = {
   dodgeDirection: null
 };
 
-let playerPunchSide = "left;
+let playerPunchSide = "left";
 
 const attackPatterns = [
   ["left", "right", "left", "left"],
