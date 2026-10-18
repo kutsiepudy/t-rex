@@ -2,6 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let enemyHealth = 100;
 let gameOver = false;
+let enemyState = "idle"
 let playerStats = {
   health: 100,
   stamina: 100,
@@ -9,6 +10,12 @@ let playerStats = {
   isPunching: false,
   isDodging: false
 };
+const attackPatterns = [
+  ["left", "right", "left", "left"],
+  ["left", "right", "left", "right"],
+  ["right", "right", "heavyL"],
+  ["heavyR", "left", "right"],
+]
 
 function gameLoop() {
   update();
