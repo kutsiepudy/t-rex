@@ -2,7 +2,9 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let enemyHealth = 100;
 let gameOver = false;
-let enemyState = "idle"
+let enemyState = "idle";
+let currentPattern = null;
+let attackIndex = 0;
 let playerStats = {
   health: 100,
   stamina: 100,
@@ -24,7 +26,11 @@ function gameLoop() {
 }
 
 function update() {
- chooseAttackPattern();
+  if (gameOver) return;
+  
+  if (currentPattern === null) {
+    chooseAttackPattern();
+  }
 }
 
 function render() {
@@ -80,8 +86,10 @@ function endGame() {
 }
 
 function triggerPlayerPunch(side) {
+  if (gameOver || enemyHealth <= 0) return;
+  if (playerStats.isPunching || playerStats.isDodging) return;
+  
   playerStats.isPunching = true;
-  if (enemyHealth <= 0) return;
 
   enemyHealth = Math.max(0, enemyHealth - 10);
   console.log(side + " punch", "Enemy Health is", enemyHealth);
@@ -96,7 +104,12 @@ function triggerPlayerPunch(side) {
 };
 
 function chooseAttackPattern() {
+  const index = Math.floor(Math.random() * attackPatterns.length);
   
-};
+  currentPattern = attackPatterns[index];
+  attackIndex = 0;
+  
+  console.log("chosen pattern: ", currentPattern);
+}
 
 gameLoop();
