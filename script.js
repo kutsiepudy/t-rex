@@ -15,8 +15,17 @@ for (const [name, sprite] of Object.entries(bigRexSprites)) {
   sprite.src = `big-rex/${name}.jpg`;
 }
 
-const lilRex = new Image();
-lilRex.src = "lil-rex/idleP.jpg";
+const lilRexSprites = {
+  idleP: new Image(),
+  dodgeL: new Image(),
+  dodgeR: new Image(),
+  punchL: new Image(),
+  punchR: new Image()
+};
+
+for (const [name, sprite] of Object.entries(lilRexSprites)) {
+  sprite.src = `lil-rex/${name}.jpg`;
+}
 
 let enemyHealth = 100;
 let gameOver = false;
@@ -37,6 +46,8 @@ let playerStats = {
   isDodging: false,
   dodgeDirection: null
 };
+
+let playerPunchSide = "left;
 
 const attackPatterns = [
   ["left", "right", "left", "left"],
@@ -142,23 +153,38 @@ function render() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
-let bigRexSprite = "idle";
-
-if (enemyState === "telegraph") {
-  bigRexSprite = "telegraph";
-} else if (enemyState === "punching") {
-  bigRexSprite = currentAttack;
-}
-
-const sprite = bigRexSprites[bigRexSprite];
-
-if (sprite.complete && sprite.naturalWidth > 0) {
-  ctx.drawImage(sprite, 350, 150, 100, 200);
-}
-
-  if (lilRex.complete && lilRex.naturalWidth > 0) {
-    ctx.drawImage(lilRex, 80, 150, 100, 200);
+  let bigRexSprite = "idle";
+  
+  if (enemyState === "telegraph") {
+    bigRexSprite = "telegraph";
+  } else if (enemyState === "punching") {
+    bigRexSprite = currentAttack;
   }
+  
+  const sprite = bigRexSprites[bigRexSprite];
+  
+  if (sprite.complete && sprite.naturalWidth > 0) {
+    ctx.drawImage(sprite, 350, 150, 100, 200);
+  }
+  
+  let lilRexSprite = "idleP";
+  
+  if (playerStats.isDodging) {
+    lilRexSprite = playerStats.dodgeDirection === "left"
+      ? "dodgeL"
+      : "dodgeR";
+  } else if (playerStats.isPunching) {
+    lilRexSprite = playerPunchSide === "left"
+      ? "punchL"
+      : "punchR";
+  }
+
+const playerSprite = lilRexSprites[lilRexSprite];
+
+if (playerSprite.complete && playerSprite.naturalWidth > 0) {
+  ctx.drawImage(playerSprite, 80, 150, 100, 200);
+}
+
 
   ctx.fillStyle = "#555";
   ctx.fillRect(350, 120, 100, 12);
@@ -236,6 +262,7 @@ function triggerPlayerPunch(side) {
   if (playerStats.isPunching || playerStats.isDodging) return;
 
   playerStats.isPunching = true;
+  playerPunchSide = side;
 
   enemyHealth = Math.max(0, enemyHealth - 10);
 
