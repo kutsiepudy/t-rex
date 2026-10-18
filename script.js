@@ -24,7 +24,7 @@ function gameLoop() {
 }
 
 function update() {
-  // will add when confirmed controls work
+ chooseAttackPattern();
 }
 
 function render() {
@@ -93,6 +93,10 @@ function triggerPlayerPunch(side) {
   setTimeout(() => {
     playerStats.isPunching = false;
   }, 250);
-}
+};
+
+function chooseAttackPattern() {
+  
+};
 
 gameLoop();
