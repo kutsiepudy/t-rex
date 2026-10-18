@@ -2,8 +2,18 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const bigRex = new Image();
-bigRex.src = "big-rex/idle.jpg";
+const bigRexSprites = {
+  idle: new Image(),
+  telegraph: new Image(),
+  left: new Image(),
+  right: new Image(),
+  heavyL: new Image(),
+  heavyR: new Image()
+};
+
+for (const [name, sprite] of Object.entries(bigRexSprites)) {
+  sprite.src = `big-rex/${name}.jpg`;
+}
 
 const lilRex = new Image();
 lilRex.src = "lil-rex/idleP.jpg";
@@ -131,9 +141,20 @@ function render() {
   ctx.fillStyle = "#111";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  if (bigRex.complete && bigRex.naturalWidth > 0) {
-    ctx.drawImage(bigRex, 350, 150, 100, 200);
-  }
+
+let bigRexSprite = "idle";
+
+if (enemyState === "telegraph") {
+  bigRexSprite = "telegraph";
+} else if (enemyState === "punching") {
+  bigRexSprite = currentAttack;
+}
+
+const sprite = bigRexSprites[bigRexSprite];
+
+if (sprite.complete && sprite.naturalWidth > 0) {
+  ctx.drawImage(sprite, 350, 150, 100, 200);
+}
 
   if (lilRex.complete && lilRex.naturalWidth > 0) {
     ctx.drawImage(lilRex, 80, 150, 100, 200);
