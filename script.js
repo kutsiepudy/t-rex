@@ -6,7 +6,7 @@ const bigRex = new Image();
 bigRex.src = "big-rex/idle.jpg";
 
 const lilRex = new Image();
-lilRex.src = "lil-rex/idle.jpg";
+lilRex.src = "lil-rex/idleP.jpg";
 
 let enemyHealth = 100;
 let gameOver = false;
