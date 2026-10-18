@@ -116,16 +116,17 @@ function render() {
   ctx.textAlign = "left";
   ctx.fillText("PLAYER HP", 50, 110);
   
-  if (enemyHealth <= 0) {
+  if (gameOver) {
     ctx.fillStyle = "#fff";
     ctx.font = "32px sans-serif";
     ctx.textAlign = "center";
+
     ctx.fillText(
-      enemyHealth <= 0 ? "TIPPED OVER" : "GAME OVER",
+      enemyHealth <= 0 ? "TIPPED OVER!!!" : "GAME OVER",
       canvas.width / 2,
       80
     );
-  };
+  }
   
   if (!gameStarted) {
     ctx.fillStyle = "#fff";
